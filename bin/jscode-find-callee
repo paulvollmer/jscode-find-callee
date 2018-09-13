@@ -5,8 +5,11 @@ const argv = require('optimist').argv;
 const find = require('../index.js');
 
 function usage() {
-  console.log('Usage: <path>');
-  console.log();
+  console.log('Usage: [flag] <path>\n');
+  console.log('Flags:');
+  console.log('  --name     The name of the callee. default: console\n');
+  console.log('Example:');
+  console.log('  $ jscode-find-callee --name myCall source.js');
 }
 
 if (process.argv.length === 2) {
@@ -14,9 +17,9 @@ if (process.argv.length === 2) {
   process.exit(1)
 }
 
-let name = ''
-if (!argv.name) {
-  name = 'console'
+let name = 'console'
+if (argv.name) {
+  name = argv.name
 }
 
 let input = ''
