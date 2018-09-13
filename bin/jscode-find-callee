@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const argv = require('optimist').argv;
+const find = require('../index.js');
+
+function usage() {
+  console.log('Usage: <path>');
+  console.log();
+}
+
+if (process.argv.length === 2) {
+  usage()
+  process.exit(1)
+}
+
+let name = ''
+if (!argv.name) {
+  name = 'console'
+}
+
+let input = ''
+if (argv._.length === 0) {
+  input = '.'
+} else {
+  input = argv._[0]
+}
+console.log('==> Input path:', input);
+fs.readFile(input, function(err, data) {
+  if (err) {
+    console.log('Error:', err.message);
+    process.exit(1)
+  }
+  find(data.toString('utf8'), name);
+})
