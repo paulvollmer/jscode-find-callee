@@ -9,7 +9,6 @@ function usage() {
   console.log('Usage: [flag] <path>\n');
   console.log('Flags:');
   console.log('  --name     The name of the callee. default: console\n');
-  console.log('  --');
   console.log('Example:');
   console.log('  $ jscode-find-callee --name myCall source.js');
 }
@@ -32,7 +31,8 @@ if (argv._.length === 0) {
 }
 
 /**
- * check if input is a file or folder
+ * process the given input path and check if input is a file or folder
+ * @param {string} input The input path
  */
 function processing(input) {
   if (fs.lstatSync(input).isDirectory()) {
@@ -43,7 +43,8 @@ function processing(input) {
 }
 
 /**
- *
+ * process the given input file
+ * @param {string} input The input path
  */
 function processingFile(input) {
   if (path.extname(input) === '.js') {
@@ -58,7 +59,8 @@ function processingFile(input) {
 }
 
 /**
- *
+ * process the given input folder
+ * @param {string} input The input path
  */
 function processingDir(input) {
   fs.readdir(input, function(err, files) {

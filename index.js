@@ -15,23 +15,29 @@ function isCall(node, name) {
          (node.callee.object.name === name);
 }
 
+/**
+ * @param {string} s The string to return as ANSI escape code
+ * @return {string} ANSI escape code
+ */
 function bold(s) {
-  return `\x1b[1m${s}\x1b[0m`
+  return `\x1b[1m${s}\x1b[0m`;
 }
 
 /**
  * find all callees of the given name
- * @param {string} program
- * @param {string} calleeName
+ * @param {string} filename The source filename to print to stdout
+ * @param {string} program The sourcecode
+ * @param {string} calleeName The calles name to search for
  */
 function find(filename, program, calleeName) {
-  let ast
+  let ast;
   try {
     ast = esprima.parseScript(program, {loc: true});
     estraverse.traverse(ast, {
       enter: function(node, parent) {
         if (isCall(node, calleeName)) {
-          console.log(`File: ${bold(filename)} \tLine: ${bold(node.loc.start.line)} \tCode: ${bold(escodegen.generate(node))}`);
+          const line = node.loc.start.line;
+          console.log(`File: ${bold(filename)} \tLine: ${bold(line)} \tCode: ${bold(escodegen.generate(node))}`);
         }
       },
     });
