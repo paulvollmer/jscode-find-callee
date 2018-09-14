@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const path = require('path');
 const argv = require('optimist').argv;
 const find = require('../index.js');
 
@@ -8,6 +9,7 @@ function usage() {
   console.log('Usage: [flag] <path>\n');
   console.log('Flags:');
   console.log('  --name     The name of the callee. default: console\n');
+  console.log('  --');
   console.log('Example:');
   console.log('  $ jscode-find-callee --name myCall source.js');
 }
@@ -28,11 +30,46 @@ if (argv._.length === 0) {
 } else {
   input = argv._[0]
 }
-console.log('==> Input path:', input);
-fs.readFile(input, function(err, data) {
-  if (err) {
-    console.log('Error:', err.message);
-    process.exit(1)
+
+/**
+ * check if input is a file or folder
+ */
+function processing(input) {
+  if (fs.lstatSync(input).isDirectory()) {
+    processingDir(input)
+  } else {
+    processingFile(input)
   }
-  find(data.toString('utf8'), name);
-})
+}
+
+/**
+ *
+ */
+function processingFile(input) {
+  if (path.extname(input) === '.js') {
+    fs.readFile(input, function(err, data) {
+      if (err) {
+        console.log('Error:', err.message);
+        process.exit(1)
+      }
+      find(input, data.toString('utf8'), name);
+    })
+  }
+}
+
+/**
+ *
+ */
+function processingDir(input) {
+  fs.readdir(input, function(err, files) {
+    if (err) {
+      console.log('Error:', err.message);
+      process.exit(1)
+    }
+    files.forEach(elem => {
+      processing(path.join(input, elem))
+    });
+  })
+}
+
+processing(input)

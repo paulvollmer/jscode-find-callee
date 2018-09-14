@@ -15,20 +15,29 @@ function isCall(node, name) {
          (node.callee.object.name === name);
 }
 
+function bold(s) {
+  return `\x1b[1m${s}\x1b[0m`
+}
+
 /**
  * find all callees of the given name
  * @param {string} program
  * @param {string} calleeName
  */
-function find(program, calleeName) {
-  const ast = esprima.parseScript(program, {loc: true});
-  estraverse.traverse(ast, {
-    enter: function(node, parent) {
-      if (isCall(node, calleeName)) {
-        console.log(`--> Line ${node.loc.start.line} \t ${escodegen.generate(node)}`);
-      }
-    },
-  });
+function find(filename, program, calleeName) {
+  let ast
+  try {
+    ast = esprima.parseScript(program, {loc: true});
+    estraverse.traverse(ast, {
+      enter: function(node, parent) {
+        if (isCall(node, calleeName)) {
+          console.log(`File: ${bold(filename)} \tLine: ${bold(node.loc.start.line)} \tCode: ${bold(escodegen.generate(node))}`);
+        }
+      },
+    });
+  } catch (err) {
+    console.log(`File: ${bold(filename)} \tError: ${bold(err.message)}`);
+  }
 }
 
 module.exports = find;
