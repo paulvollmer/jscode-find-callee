@@ -1,6 +1,6 @@
 {
   "name": "jscode-find-callee",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "find calls at sourcecode",
   "main": "index.js",
   "scripts": {
